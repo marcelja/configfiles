@@ -30,9 +30,6 @@ install_kitty_config() {
 	font_size $KITTY_FONT_SIZE
 	font_family $KITTY_FONT_FAMILY
 	kitty_mod $KITTY_MOD
-	# https://stackoverflow.com/a/12403798/5203308
-	# map $KITTY_MOD2+left send_text all \x1b\x62
-	# map $KITTY_MOD2+right send_text all \x1b\x66
 
 	# https://github.com/kovidgoyal/kitty/issues/264#issuecomment-355577668
 	map $KITTY_MOD2+backspace send_text all \x17
