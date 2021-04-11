@@ -1,0 +1,147 @@
+# Sway Config
+
+# configuration from install.sh
+include ~/.config/configfiles/sway
+
+### Screens
+
+output * bg $bgimage fill
+workspace 1 output DP-2
+workspace 2 output DP-2
+workspace 3 output DP-2
+workspace 4 output DP-1
+workspace 5 output DP-1
+workspace 6 output DP-1
+workspace 7 output DP-1
+workspace 8 output DP-1
+workspace 9 output DP-1
+workspace 10 output DP-1
+
+### Idle, lock, suspend
+
+bindsym $mod+$modr+q exec swaylock -f -i $lockimage
+bindsym $mod+$modr+s exec systemctl suspend-then-hibernate
+# Have different timeout when screen is locked:
+# https://github.com/swaywm/swayidle/issues/2#issuecomment-445704694
+exec swayidle -w \
+    timeout 900 'swaylock -f -i $lockimage' \
+    timeout 930 'swaymsg "output * dpms off"' \
+    timeout 90 'if pgrep swaylock; then swaymsg "output * dpms off"; fi' \
+    resume 'swaymsg "output * dpms on"' \
+    before-sleep 'swaylock -f -i $lockimage'
+
+### Gaps and borders
+
+smart_gaps on
+smart_borders on
+gaps inner 12
+default_border pixel 5
+
+### Key bindings
+
+set $left h
+set $down j
+set $up k
+set $right l
+
+# Map caps lock to escape
+input "type:keyboard" {
+    xkb_options caps:escape
+}
+# Screenshot
+bindsym $modr+Shift+s exec grim -g "$(slurp)" - | wl-copy
+
+# KP_Enter instead of Return for some keyboards
+# bindsym $modr+KP_Enter exec kitty --single-instance
+bindsym $modr+Return exec kitty --single-instance
+bindsym $modr+Shift+Return exec GDK_BACKEND=wayland firefox
+
+bindsym $modr+Space exec wofi --show run --gtk-dark
+
+bindsym $mod+Shift+q kill
+
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioRaiseVolume exec amixer -D pulse set Master 9%+ unmute
+bindsym XF86AudioLowerVolume exec amixer -D pulse set Master 9%- unmute
+bindsym XF86AudioMute exec amixer -D pulse set Master 1+ toggle
+bindsym XF86MonBrightnessUp exec brightnessctl set +10%
+bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
+
+floating_modifier $mod normal
+
+# Reload the configuration file
+bindsym $mod+Shift+c reload
+# Exit sway (logs you out of your Wayland session)
+bindsym $mod+Shift+e exec swaymsg exit
+
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+### Layouting
+
+bindsym $mod+b splith
+bindsym $mod+v splitv
+
+# Switch the current container between different layout styles
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Make the current focus fullscreen
+bindsym $mod+f fullscreen
+
+# Toggle the current focus between tiling and floating mode
+bindsym $mod+Shift+space floating toggle
+
+# Swap focus between the tiling area and the floating area
+bindsym $mod+space focus mode_toggle
+
+# Move focus to the parent container
+bindsym $mod+a focus parent
+
+bindsym $mod+$modr+$left resize shrink width 50px
+bindsym $mod+$modr+$down resize grow height 50px
+bindsym $mod+$modr+$up resize shrink height 50px
+bindsym $mod+$modr+$right resize grow width 50px
+
+### Sway bar
+
+bar {
+    position top
+    status_command while echo $(~/.config/configfiles/status.sh); do sleep 1; done
+    colors {
+        background #152927
+    }
+}
+
+include @sysconfdir@/sway/config.d/*

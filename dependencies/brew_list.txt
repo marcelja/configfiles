@@ -1,0 +1,10 @@
+autojump
+bat
+icu4c
+neovim
+romkatv/powerlevel10k/powerlevel10k
+the_silver_searcher
+zsh-autosuggestions
+zsh-syntax-highlighting
+kubectl
+gh
