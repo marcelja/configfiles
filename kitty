@@ -37,4 +37,3 @@ map kitty_mod+u scroll_page_up
 map kitty_mod+d scroll_page_down
 
 map kitty_mod+f show_scrollback
-scrollback_pager nvim --noplugin -c 'set ft=man' -
