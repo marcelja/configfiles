@@ -28,6 +28,7 @@ swaylock
 vim
 wf-recorder
 wl-clipboard
+xdg-desktop-portal-wlr
 xorg-xeyes
 xorg-xwayland
 zsh
