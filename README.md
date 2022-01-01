@@ -10,6 +10,7 @@ sudo pacman -S --needed - < dependencies/pacman_list.txt
 ```
 https://wiki.archlinux.org/index.php/Pacman/Tips_and_tricks#Install_packages_from_a_list
 
+* Run `timedatectl status` and see if timezone is set and ntp enabled
 * Download ttf files and put into `~/.local/share/fonts/` https://github.com/romkatv/powerlevel10k#manual-font-installation
 * Change default shell to zsh
 ```
@@ -47,8 +48,6 @@ xargs brew install --cask < dependencies/brew_cask_list.txt
 ```
 * *optional* Start sway
 * Start kitty terminal, configure powerlevel10k theme
-* Install vim-plug for vim/neovim: https://github.com/junegunn/vim-plug
-* Install vim plugins in vim/neovim using `:PlugInstall`
 
 ## Update dependency files
 
