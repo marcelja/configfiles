@@ -3,7 +3,15 @@
 # configuration from install.sh
 include ~/.config/configfiles/sway
 
+### cursor theme and size
+## https://wiki.archlinux.org/title/Sway#Change_cursor_theme_and_size
+seat seat0 xcursor_theme default 42
+## gsettings set org.gnome.desktop.interface cursor-size 42
+
 ### Screens
+
+output DP-2 pos 0 0
+output DP-1 pos 3840 0
 
 output * bg $bgimage fill
 workspace 1 output DP-2
@@ -16,11 +24,13 @@ workspace 7 output DP-1
 workspace 8 output DP-1
 workspace 9 output DP-1
 workspace 10 output DP-1
+workspace 11 output DP-1
 
-### Idle, lock, suspend
+### Idle, lock, suspend, notifications
 
 bindsym $mod+$modr+q exec swaylock -f -i $lockimage
-bindsym $mod+$modr+s exec systemctl suspend-then-hibernate
+# bindsym $mod+$modr+s exec systemctl suspend-then-hibernate
+bindsym $mod+$modr+s exec systemctl suspend
 # Have different timeout when screen is locked:
 # https://github.com/swaywm/swayidle/issues/2#issuecomment-445704694
 exec swayidle -w \
@@ -30,12 +40,14 @@ exec swayidle -w \
     resume 'swaymsg "output * dpms on"' \
     before-sleep 'swaylock -f -i $lockimage'
 
+exec mako
+
 ### Gaps and borders
 
 smart_gaps on
 smart_borders on
-gaps inner 12
-default_border pixel 5
+gaps inner 34
+default_border pixel 8
 
 ### Key bindings
 
@@ -54,18 +66,21 @@ bindsym $modr+Shift+s exec grim -g "$(slurp)" - | wl-copy
 # KP_Enter instead of Return for some keyboards
 # bindsym $modr+KP_Enter exec kitty --single-instance
 bindsym $modr+Return exec kitty --single-instance
-bindsym $modr+Shift+Return exec GDK_BACKEND=wayland firefox
+bindsym $modr+Shift+Return exec MOZ_ENABLE_WAYLAND=1 MOZ_DBUS_REMOTE=1 GDK_DPI_SCALE=1.5 firefox
 
-bindsym $modr+Space exec wofi --show run --gtk-dark
+bindsym $modr+Space exec kitty --class=launcher bash -c 'compgen -c | grep -xv "fzf\|spotify" | sort -u | fzf --layout=reverse | xargs -r swaymsg -t command exec'
+for_window [app_id="^launcher$"] floating enable, opacity 0.95, resize set 1200 800
+for_window [app_id="^firefox$" title="^.+Sharing Indicator$"] move workspace 11
+for_window [title="Wine System Tray"] move workspace 11
 
 bindsym $mod+Shift+q kill
 
 bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
-bindsym XF86AudioRaiseVolume exec amixer -D pulse set Master 9%+ unmute
-bindsym XF86AudioLowerVolume exec amixer -D pulse set Master 9%- unmute
-bindsym XF86AudioMute exec amixer -D pulse set Master 1+ toggle
+bindsym XF86AudioRaiseVolume exec pactl set-sink-mute 0 false && pactl set-sink-volume 0 +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-mute 0 false && pactl set-sink-volume 0 -5%
+bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle
 bindsym XF86MonBrightnessUp exec brightnessctl set +10%
 bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
 
@@ -145,3 +160,8 @@ bar {
 }
 
 include @sysconfdir@/sway/config.d/*
+
+# https://wiki.archlinux.org/title/PipeWire
+# https://github.com/emersion/xdg-desktop-portal-wlr#running
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+# exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway XDG_SESSION_TYPE=wayland

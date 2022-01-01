@@ -1,9 +1,13 @@
 #!/bin/bash
 
 timestamp=$(date +'%Y-%m-%d %l:%M:%S %p')
-volume=$(awk -F"[][]" '/Mono:/ { print $2 }' <(amixer sget Master))
-if $(amixer sget Master | grep -q off); then
+volume=$(pulsemixer --get-volume | cut -d" " -f1)
+if [[ $(pulsemixer --get-mute) == "1" ]]; then
     volume="mute"
 fi
+mic=""
+if swaymsg -t get_tree | grep "Sharing Indicator" -q; then
+    mic="FF mic | "
+fi
 
-echo "vol $volume | $timestamp"
+echo "$mic vol $volume | $timestamp"
