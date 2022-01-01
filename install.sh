@@ -1,19 +1,21 @@
 #!/bin/bash
 
-KITTY_MOD=cmd
-KITTY_MOD2=alt
-SWAY_BG_IMAGE=~/pr/backgrounds/img/08.jpg
-SWAY_OUTPUT_SCALE=1.5
+SWAY_BG_IMAGE=~/pr/bgs/palms.jpg
+SWAY_OUTPUT_SCALE=1
 SWAY_FONT_SIZE=14
 
 case `uname` in
 	Darwin)
+		KITTY_MOD=cmd
+		KITTY_MOD2=alt
 		KITTY_FONT_SIZE=16
 		KITTY_FONT_FAMILY="MesloLGS NF"
-		DEFAULT_EDITOR=vim
+		DEFAULT_EDITOR=nvim
 	;;
 	Linux)
-		KITTY_FONT_SIZE=14
+		KITTY_MOD=alt
+		KITTY_MOD2=cmd
+		KITTY_FONT_SIZE=20
 		KITTY_FONT_FAMILY="Source Code Pro"
 		DEFAULT_EDITOR=nvim
 	;;
@@ -30,9 +32,6 @@ install_kitty_config() {
 	font_size $KITTY_FONT_SIZE
 	font_family $KITTY_FONT_FAMILY
 	kitty_mod $KITTY_MOD
-
-	# https://github.com/kovidgoyal/kitty/issues/264#issuecomment-355577668
-	map $KITTY_MOD2+backspace send_text all \x17
 	" > ~/.config/configfiles/kitty
 }
 
@@ -61,10 +60,12 @@ install_vim_config() {
 	# vim
 	mkdir -p ~/.vim
 	mkdir -p ~/.vimundo
-	ln -sfn $configspath/vimrc ~/.vimrc
 	# nvim
 	mkdir -p ~/.config/nvim
 	ln -sfn $configspath/vimrc ~/.config/nvim/init.vim
+	# nvim lua
+	mkdir -p ~/.config/nvim/lua
+	ln -sfn $configspath/lsp.lua ~/.config/nvim/lua/lsp.lua
 }
 
 install_kitty_config
@@ -83,12 +84,44 @@ install_sway_configs() {
 	ln -sfn $configspath/mako ~/.config/mako/config
 
 	echo "
-	set \$mod Mod1
-	set \$modr Mod4
+	set \$mod Mod4
+	set \$modr Mod1
 	output * scale $SWAY_OUTPUT_SCALE
 	set \$lockimage $SWAY_BG_IMAGE
 	set \$bgimage $SWAY_BG_IMAGE
 	font SourceCodePro Medium $SWAY_FONT_SIZE
 	" > ~/.config/configfiles/sway
 }
+
+install_vim_plug() {
+	# nvim
+	sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+	nvim +PlugInstall +qall
+}
+
+install_git_delta() {
+	if ! grep -Fq "delta" ~/.gitconfig
+	then
+		echo "
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[diff]
+    colorMoved = default
+
+[delta]
+    navigate = true
+    syntax-theme=GitHub
+  ; line-numbers=true
+  ; side-by-side=true
+" >> ~/.gitconfig
+	fi
+}
+
 install_sway_configs
+install_vim_plug
+install_git_delta
