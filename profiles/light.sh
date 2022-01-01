@@ -7,3 +7,5 @@ kitty @ set-colors -a -c $scriptpath/papercolor_kitty_light.conf
 
 [ -f /usr/bin/osascript ] && osascript -e \
     'tell application "System Events" to tell appearance preferences to set dark mode to false'
+[ -f /usr/bin/gsettings ] && gsettings set org.gnome.desktop.interface gtk-theme Breeze
+sed -i.bak 's/syntax-theme=Dracula/syntax-theme=GitHub/' ~/.gitconfig
