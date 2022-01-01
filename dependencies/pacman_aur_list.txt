@@ -1,4 +1,4 @@
-autojump
+autojump-git
 lf
 spotify
 yay

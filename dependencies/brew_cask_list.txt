@@ -1,5 +1,3 @@
 eloston-chromium
-font-source-code-pro
 kitty
 spectacle
-vnc-viewer

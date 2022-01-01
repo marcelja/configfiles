@@ -1,10 +1,14 @@
 autojump
 bat
+exa
+fd
+gh
+git-delta
 icu4c
+kubectl
+lf
 neovim
+rg
 romkatv/powerlevel10k/powerlevel10k
-the_silver_searcher
 zsh-autosuggestions
 zsh-syntax-highlighting
-kubectl
-gh
